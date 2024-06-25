@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 
 async function searchVideos(query) {
-  const apiKey = 'AIzaSyBKfuLjeG5ZmOAX2u2ljMZj_42x1RQBdRU'; // Store API key in environment variables
+  const apiKey = 'AIzaSyCeTCznpqoKsDru7lDI75Ikoqy-bniyNWA'; // Store API key in environment variables
   const url = `https://www.googleapis.com/youtube/v3/search?key=${apiKey}&q=${query}&part=snippet&maxResults=1&type=video`;
 
   try {
