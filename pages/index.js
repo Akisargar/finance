@@ -1,47 +1,81 @@
 import Head from 'next/head';
+import { useState,useEffect } from 'react';
+import { useRouter } from 'next/router';  
 import InfluencerCard from '../components/InfluencerCard';
 import 'bootstrap/dist/css/bootstrap.min.css';
-// import '../styles/globals.css';
+import Styles from '../styles/hero.module.css';
 
 export default function Home() {
-  const influencers = ["Rachana Ranade", "Akshat Shrivastav", "Pranjal Kamra", "Sunil Mingalani", "Ravi Kumar Stock market"];
+  const [isLoggedIn, setIsLoggedIn] = useState();
+  const [influencers, setInfluencers] = useState([]);
+  
+  const router = useRouter();
+  useEffect(() => {
+    const isLoggedIn = sessionStorage.getItem('isAdminLoggedIn') === 'true';
+    if (!isLoggedIn) {
+      // router.push('/login');
+      setIsLoggedIn(false);
+    } else {
+      setIsLoggedIn(true);
+    }
+    
+  }, []);
+
+  useEffect(() => {
+    fetch('/influencer.json')
+      .then(response => response.json())
+      .then(data => setInfluencers(data));
+  }, []);
+
+  const handleLogin = () => {
+    router.push('/login');
+  };
+
+  const handleLogout = () => {
+    sessionStorage.removeItem('isAdminLoggedIn');
+    // router.push('/login');
+    setIsLoggedIn(false);
+  };
+
+  const refreshAll = () => {
+    alert('Refresh All');
+  };
+  
 
   return (
-    <div>
+    <>
       <Head>
         <title>Money control | Daily Updates of Stock market</title>
       </Head>
-      <div className="container-fluid bg-dark text-white">
-        <div className="container">
+      <div className={`container-fluid text-dark ${Styles.heroBanner}`}>
+        <div className={`container ${Styles.container}`}>
           <div className="row align-items-center py-4">
-            <div className="col-md-6">
-              <h2>Daily Updates of Stock market</h2>
+            <div className='col'>
+              <h1>Daily Updates of Stock market</h1>
             </div>
-            <div className="col-md-6">
-              <img src="../public/IMG.png" alt="Stock Market" />
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className="container my-4">
-        <h2>Influencers :</h2>
-        <div className="container-wrapper row my-4">
-          {influencers.map(name => (
-            <InfluencerCard key={name} name={name} />
-          ))}
-          <div className="stock-info"></div>
-        </div>
-        <h3 className="generate-text my-2">Results:</h3>
-        <div className="card col-md-12 my-4">
-          <div className="my-3">
-            <div className="title-text">
-              <h5 className="bottom-text">Expected Stocks:</h5>
-              <br />
-              <div id="chatgpt-response"></div>
+            <div className='col d-flex justify-content-end'>
+              {!isLoggedIn && <button onClick={handleLogin} className='mx-2'>Login</button>}
+              {isLoggedIn && <div><button onClick={handleLogout} className='mx-2'>Logout</button>
+              <button className='mx-2' onClick={refreshAll}>Refresh</button></div>}
             </div>
           </div>
         </div>
       </div>
-    </div>
+      <div className={`container-fluid ${Styles.dashboard}`}>
+        <div className="container">
+          <div className="container-wrapper row">
+            {influencers.map(influencer => (
+              <InfluencerCard key={influencer.name} name={influencer.name} />
+            ))}
+            <div className="stock-info"></div>
+          </div>
+          <div className="Website-container">
+            <h2 className="web-heading">Details from website</h2>
+            <h3 className="Website-Name">https://www.livemint.com/market</h3>
+            <div className="stock-info"></div>
+          </div>
+        </div>
+      </div>
+    </>
   );
 }

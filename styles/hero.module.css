@@ -1,0 +1,19 @@
+.heroBanner {
+    background-position: center;
+    background-size: cover;
+    position: relative;
+}
+
+.heroBanner .container { 
+    position: relative;
+}
+
+.dashboard {
+    /* background: linear-gradient(#343131, transparent), linear-gradient(to top left, #e86e11, transparent), linear-gradient(to top right, #095863, transparent); */
+    padding: 16px;
+}
+.loginBtn {
+    position: absolute;
+    bottom: 0;
+    text-align: end;
+}
