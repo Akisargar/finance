@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 
 async function searchVideos(query) {
-  const apiKey = 'AIzaSyCeTCznpqoKsDru7lDI75Ikoqy-bniyNWA'; // Store API key in environment variables
+  const apiKey = 'AIzaSyCI3_NrloefftYGo0E8myYsy-EqpgXrl8Q'; // Store API key in environment variables
   const url = `https://www.googleapis.com/youtube/v3/search?key=${apiKey}&q=${query}&part=snippet&maxResults=1&type=video`;
 
   try {
@@ -58,9 +58,10 @@ async function sendArrayToChatGPT(array, prompt) {
 const InfluencerCard = ({ name }) => {
   useEffect(() => {
     const query = name;
-    const videoList = document.querySelector(`#${name.replace(/ /g, '-')}-videoList`);
+    // const videoList = document.querySelector(`#${name.replace(/ /g, '-')}-videoList`);
+    const idSuffix = typeof name === 'string' ? name.replace(/ /g, '-') : 'default';
+    const videoList = document.querySelector(`#${idSuffix}-videoList`);
     const expectedResult = document.getElementById('chatgpt-response');
-    const chatGPTResponse = document.getElementById('chatgpt-response-wrapper');
 
     searchVideos(query)
       .then(videos => {
@@ -74,10 +75,9 @@ const InfluencerCard = ({ name }) => {
               sendArrayToChatGPT(transcriptArray, 'Analyze the transcript and list down stocks discussed with one-liner summary for each stock')
                 .then(response => {
                   const expectedResult = document.getElementById('chatgpt-response');
-                  console.log(transcriptArray);
                   expectedResult.setAttribute('id',video.videoId);
                   const chatgptResponse = document.createElement("div");
-                  chatgptResponse.innerHTML = `<h3 id="chatgpt-response ${video.videoId}">${response}</h3>`;
+                  chatgptResponse.innerHTML = `<h5 className="bottom-text">Expected result :-</h5><br><h3 id="chatgpt-response ${video.videoId}">${response}</h3>`;
                   expectedResult.appendChild(chatgptResponse);
                 })
                 .catch(error => console.error('Error sending array to ChatGPT:', error));
@@ -89,18 +89,17 @@ const InfluencerCard = ({ name }) => {
   }, [name]);
 
   return (
-    <div className="col-md-6">
-      <div className="card my-2 bg-secondary text-white">
+    <div className="col-md-12">
+      <div className="card my-2 bg-white text-dark bg-opacity-50">
         <div className="card-body">
           <h3 className="generate-text">{name}</h3>
           <div className="title-text">
-            <h5 className="bottom-text">Latest Videos :-</h5>
+            <h5 className="bottom-text">Latest Videos:-</h5>
             <br />
             <div className="videoResults">
-              <ul id={`${name.replace(/ /g, '-')}-videoList`} className="videoList"></ul>
+              <ul id={typeof name === 'string' ? `${name.replace(/ /g, '-')}-videoList` : 'default-videoList'} className="videoList"></ul>
             </div>
             <br />
-            <h5 className="bottom-text">Expected result :-</h5>
             <div id="chatgpt-response"></div>
           </div>
         </div>
