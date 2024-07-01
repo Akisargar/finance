@@ -62,7 +62,7 @@ export default function Home() {
             <div className='col d-flex justify-content-end'>
               {!isLoggedIn && <button onClick={handleLogin} className='mx-2'>Login</button>}
               {isLoggedIn && <div><button onClick={handleLogout} className='mx-2'>Logout</button>
-              <button className='mx-2' onClick={refreshAll}>Refresh</button></div>}
+              {/* <button className='mx-2' onClick={refreshAll}>Refresh</button></div>} */}
             </div>
           </div>
         </div>
