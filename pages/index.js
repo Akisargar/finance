@@ -14,7 +14,7 @@ export default function Home() {
   useEffect(() => {
     const isLoggedIn = sessionStorage.getItem('isAdminLoggedIn') === 'true';
     if (!isLoggedIn) {
-      // router.push('/login');
+      router.push('/login');
       setIsLoggedIn(false);
     } else {
       setIsLoggedIn(true);
