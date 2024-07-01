@@ -4,6 +4,7 @@ import { useRouter } from 'next/router';
 import InfluencerCard from '../components/InfluencerCard';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Styles from '../styles/hero.module.css';
+import SiteData from '../components/SiteData';
 
 export default function Home() {
   const [isLoggedIn, setIsLoggedIn] = useState();
@@ -75,9 +76,9 @@ export default function Home() {
             <div className="stock-info"></div>
           </div>
           <div className="Website-container">
-            <h2 className="web-heading">Details from website</h2>
-            <h3 className="Website-Name">https://www.livemint.com/market</h3>
-            <div className="stock-info"></div>
+          <h2 className="web-heading">Details from website</h2>
+            <SiteData url='https://www.livemint.com/market'/>
+            {/* <SiteData url='https://www.livemint.com/market/stock-market-news'/> */}
           </div>
         </div>
       </div>
