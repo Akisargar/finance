@@ -23,11 +23,11 @@ export default function Home() {
     
   }, []);
 
-  // useEffect(() => {
-  //   fetch('/influencer.json')
-  //     .then(response => response.json())
-  //     .then(data => setInfluencers(data));
-  // }, []);
+  useEffect(() => {
+    fetch('/influencer.json')
+      .then(response => response.json())
+      .then(data => setInfluencers(data));
+  }, []);
 
   const handleLogin = () => {
     router.push('/login');
