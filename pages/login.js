@@ -12,6 +12,8 @@ export default function Login() {
     const isLoggedIn = sessionStorage.getItem('isAdminLoggedIn');
     if (isLoggedIn) {
       router.push('/');
+    } else {
+      router.push('/login');
     }
   }, []);
 

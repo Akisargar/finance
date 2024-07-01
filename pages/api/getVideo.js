@@ -26,7 +26,7 @@ export default function handler(req, res) {
       if (video) {
         res.status(200).json(video);
       } else {
-        res.status(404).json({ message: 'Video not found' });
+        res.status(200).json(videoId);
       }
     });
   } else {
