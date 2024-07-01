@@ -1,7 +1,7 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 
 async function searchVideos(query) {
-  const apiKey = 'AIzaSyCI3_NrloefftYGo0E8myYsy-EqpgXrl8Q'; // Store API key in environment variables
+  const apiKey = 'AIzaSyCy6WWY4_PmSIoR4IzAFzIIoxJu03GqgG8'; // Store API key in environment variables
   const url = `https://www.googleapis.com/youtube/v3/search?key=${apiKey}&q=${query}&part=snippet&maxResults=1&type=video`;
 
   try {
@@ -55,10 +55,33 @@ async function sendArrayToChatGPT(array, prompt) {
   }
 }
 
+async function saveVideo(videoObj) {
+  try {
+    const response = await fetch('/api/saveVideo', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ videoObj })
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to save video');
+    }
+
+    const data = await response.json();
+    return data.message;
+  } catch (error) {
+    console.error('Error saving video:', error);
+    throw error;
+  }
+}
+
 const InfluencerCard = ({ name }) => {
+  const [videoArray, setVideoArray] = useState([]);
+
   useEffect(() => {
     const query = name;
-    // const videoList = document.querySelector(`#${name.replace(/ /g, '-')}-videoList`);
     const idSuffix = typeof name === 'string' ? name.replace(/ /g, '-') : 'default';
     const videoList = document.querySelector(`#${idSuffix}-videoList`);
     const expectedResult = document.getElementById('chatgpt-response');
@@ -67,15 +90,26 @@ const InfluencerCard = ({ name }) => {
       .then(videos => {
         videos.forEach(video => {
           const listItem = document.createElement('li');
-          
           listItem.innerHTML = `<h3 id="description-text ${video.videoId}">${video.title}: ${new Date(video.publishedAt).toLocaleDateString()}</h3>`;
           videoList.appendChild(listItem);
           getVideoTranscript(video.videoId)
             .then(transcriptArray => {
               sendArrayToChatGPT(transcriptArray, 'Analyze the transcript and list down stocks discussed with one-liner summary for each stock')
                 .then(response => {
+                  const videoObj = {
+                    id: video.videoId,
+                    name: name,
+                    title: video.title,
+                    date: video.publishedAt,
+                    transcript: transcriptArray,
+                    chatGPTresponse: response
+                  };
+                  setVideoArray(oldArray => {
+                    saveVideo(videoObj); // Save video one by one
+                    return [...oldArray, videoObj];
+                  });
                   const expectedResult = document.getElementById('chatgpt-response');
-                  expectedResult.setAttribute('id',video.videoId);
+                  expectedResult.setAttribute('id', video.videoId);
                   const chatgptResponse = document.createElement("div");
                   chatgptResponse.innerHTML = `<h5 className="bottom-text">Expected result :-</h5><br><h3 id="chatgpt-response ${video.videoId}">${response}</h3>`;
                   expectedResult.appendChild(chatgptResponse);

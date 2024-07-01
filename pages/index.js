@@ -8,6 +8,7 @@ import Styles from '../styles/hero.module.css';
 export default function Home() {
   const [isLoggedIn, setIsLoggedIn] = useState();
   const [influencers, setInfluencers] = useState([]);
+  const [isRefreshing, setIsRefreshing] = useState(false);
   
   const router = useRouter();
   useEffect(() => {
@@ -21,11 +22,11 @@ export default function Home() {
     
   }, []);
 
-  useEffect(() => {
-    fetch('/influencer.json')
-      .then(response => response.json())
-      .then(data => setInfluencers(data));
-  }, []);
+  // useEffect(() => {
+  //   fetch('/influencer.json')
+  //     .then(response => response.json())
+  //     .then(data => setInfluencers(data));
+  // }, []);
 
   const handleLogin = () => {
     router.push('/login');
@@ -38,7 +39,11 @@ export default function Home() {
   };
 
   const refreshAll = () => {
-    alert('Refresh All');
+    setIsRefreshing(true);
+    fetch('/influencer.json')
+    .then(response => response.json())
+    .then(data => setInfluencers(data))
+    // .finally(() => setIsRefreshing(false));
   };
   
 
@@ -65,7 +70,7 @@ export default function Home() {
         <div className="container">
           <div className="container-wrapper row">
             {influencers.map(influencer => (
-              <InfluencerCard key={influencer.name} name={influencer.name} />
+              <InfluencerCard key={influencer.name} name={influencer.name} refresh = {isRefreshing} />
             ))}
             <div className="stock-info"></div>
           </div>
